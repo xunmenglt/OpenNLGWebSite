@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.opennlg.mapper.MembersMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.opennlg.pojo.Members">
+        <id column="member_id" property="memberId" />
+        <result column="cn_name" property="cnName" />
+        <result column="en_name" property="enName" />
+        <result column="member_desc" property="memberDesc" />
+        <result column="profession" property="profession" />
+        <result column="direction" property="direction" />
+        <result column="email" property="email" />
+        <result column="ct_type" property="ctType" />
+        <result column="serial_num" property="serialNum" />
+        <result column="avatar_url" property="avatarUrl" />
+        <result column="outside_url" property="outsideUrl" />
+        <result column="inside_url" property="insideUrl" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <resultMap id="SelectMembersListResultMap" type="com.opennlg.pojo.MembersCategory">
+        <result column="ct_type" property="ctType" />
+        <result column="ct_zh_name" property="ctZhName" />
+        <result column="sort" property="sort" />
+        <collection property="children" resultMap="BaseResultMap"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        member_id, cn_name, en_name, member_desc,profession,direction, email,ct_type,serial_num, avatar_url, outside_url, inside_url, create_time, update_time
+    </sql>
+    
+    <select id="selectMembersList" resultMap="SelectMembersListResultMap">
+        SELECT
+            mc.`ct_type`,
+            mc.`ct_zh_name`,
+            mc.`sort`,
+            m.member_id,
+            m.cn_name,
+            m.en_name,
+            m.member_desc,
+            m.profession,
+            m.direction,
+            m.email,
+            m.serial_num,
+            m.avatar_url,
+            m.outside_url,
+            m.inside_url,
+            m.create_time,
+            m.update_time
+        FROM `og_members_category` AS mc
+        RIGHT JOIN `og_members` AS m
+        ON m.`ct_type`=mc.`ct_type`
+        ORDER BY mc.`sort` ASC , m.serial_num ASC 
+    </select>
+
+</mapper>

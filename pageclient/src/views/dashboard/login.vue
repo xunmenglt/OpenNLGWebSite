@@ -1,0 +1,268 @@
+<template>
+  <div class="login">
+    <div class="container">
+      <!-- <div class="left">
+            OpenNLG
+        </div> -->
+      <div class="right">
+        <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
+          <div class="logo">
+            <img :src="logo">
+          </div>
+          <el-form-item prop="username">
+            <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="用户名或邮箱">
+              <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="password">
+            <el-input v-model="loginForm.password" auto-complete="off" placeholder="密码" show-password
+              @keyup.enter.native="handleLogin">
+              <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="code" v-if="captchaEnabled">
+            <el-input v-model="loginForm.code" auto-complete="off" placeholder="验证码" style="width: 63%"
+              @keyup.enter.native="handleLogin">
+              <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
+            </el-input>
+            <div class="login-code">
+              <img :src="codeUrl" @click="getCode" class="login-code-img" />
+            </div>
+          </el-form-item>
+          <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
+          <el-form-item style="width:100%;">
+            <el-button :loading="loading" size="medium" type="primary" style="width:100%;"
+              @click.native.prevent="handleLogin">
+              <span v-if="!loading">登 录</span>
+              <span v-else>登 录 中...</span>
+            </el-button>
+            <!-- <div style="float: left;">
+                <router-link class="link-type" :to="'/forget'">忘记密码?</router-link>
+              </div>
+              <div style="float: right;">
+                <router-link class="link-type" :to="'/register'">立即注册</router-link>
+              </div> -->
+          </el-form-item>
+        </el-form>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import Cookies from "js-cookie";
+import logoImg from '@/assets/logo.png'
+import { loginApi } from '@/utils/api/auth'
+import { mapState, mapMutations, mapGetters } from 'vuex'
+import { showTextMessage } from '@/plugins/toastification';
+export default {
+  name: "Login",
+  data() {
+    return {
+      flag: false,
+      logo: logoImg,
+      codeUrl: "",
+      loginForm: {
+        username: "",
+        password: "",
+        rememberMe: false,
+      },
+      loginRules: {
+        username: [
+          { required: true, trigger: "blur", message: "请输入您的账号" }
+        ],
+        password: [
+          { required: true, trigger: "blur", message: "请输入您的密码" }
+        ],
+        code: [{ required: true, trigger: "change", message: "请输入验证码" }]
+      },
+      loading: false,
+      // 验证码开关
+      captchaEnabled: false,
+      // 注册开关
+      register: false,
+      redirect: undefined
+    };
+  },
+  computed: {
+    ...mapState("m_path", ['toPath']),
+  },
+  created() {
+    this.getCode();
+    this.getCookie();
+  },
+  methods: {
+    ...mapMutations("m_path", ['clearToPath']),
+    handleCancel() {
+      this.$emit('handleCancel', true)
+    },
+    getCode() {
+      // getCodeImg().then(res => {
+      //   this.captchaEnabled = res.captchaEnabled === undefined ? true : res.captchaEnabled;
+      //   if (this.captchaEnabled) {
+      //     this.codeUrl = "data:image/gif;base64," + res.img;
+      //     this.loginForm.uuid = res.uuid;
+      //   }
+      // });
+    },
+    getCookie() {
+      const username = Cookies.get("username");
+      const password = Cookies.get("password");
+      const rememberMe = Cookies.get('rememberMe')
+      this.loginForm = {
+        username: username === undefined ? this.loginForm.username : username,
+        password: password === undefined ? this.loginForm.password : decrypt(password),
+        rememberMe: rememberMe === undefined ? false : Boolean(rememberMe)
+      };
+    },
+    handleLogin() {
+      this.$refs.loginForm.validate(valid => {
+        if (valid) {
+          this.loading = true;
+          if (this.loginForm.rememberMe) {
+            Cookies.set("username", this.loginForm.username, { expires: 30 });
+            Cookies.set("password", this.loginForm.password, { expires: 30 });
+            Cookies.set('rememberMe', this.loginForm.rememberMe, { expires: 30 });
+          } else {
+            Cookies.remove("username");
+            Cookies.remove("password");
+            Cookies.remove('rememberMe');
+          }
+          this.doLogin({ username: this.loginForm.username, password: this.loginForm.password }).then(() => {
+            this.$router.push('/dashboard')
+            this.$emit('handleCancel', true)
+          }).catch(() => {
+            this.loading = false;
+            if (this.captchaEnabled) {
+              this.getCode();
+            }
+          })
+        }
+      });
+    },
+    async doLogin(data) {
+      const res = await loginApi(data)
+      if (res && res.code === 200) {
+        // 保存token
+        const token = res.data.tokenHead + res.data.token
+        window.localStorage.setItem('og_token', token)
+        // 判断之前是否从其他跳转过来的界面
+        if (this.toPath != '/' && this.toPath != '/index') {
+          const path = this.toPath + ''
+          this.clearToPath()
+          this.$router.replace(path)
+        }
+      } else {
+        showTextMessage(error, res.message)
+      }
+    }
+  }
+};
+</script>
+
+<style rel="stylesheet/scss" lang="scss" scoped>
+.container {
+  width: 100%;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .right,
+  .left {
+    width: 50%;
+  }
+
+  .right {
+    margin-right: 70px;
+  }
+
+  .left {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+    font-size: 50px;
+    font-weight: 900;
+    text-align: center;
+    font-family: Arial;
+  }
+
+  .right {
+    padding-left: 200px;
+  }
+}
+
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-image: url("../../assets/images/bg_02.jpg");
+  background-size: cover;
+}
+
+.logo {
+  align-content: center;
+
+  & img {
+    width: 100%;
+  }
+}
+
+.login-form {
+  border-radius: 6px;
+  background: #ffffff;
+  width: 400px;
+  padding: 5px 25px 5px 25px;
+
+  .el-input {
+    height: 38px;
+
+    input {
+      height: 38px;
+    }
+  }
+
+  .input-icon {
+    height: 39px;
+    width: 14px;
+    margin-left: 2px;
+  }
+}
+
+.login-tip {
+  font-size: 13px;
+  text-align: center;
+  color: #bfbfbf;
+}
+
+.login-code {
+  width: 33%;
+  height: 38px;
+  float: right;
+
+  img {
+    cursor: pointer;
+    vertical-align: middle;
+  }
+}
+
+.el-login-footer {
+  height: 40px;
+  line-height: 40px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  font-family: Arial;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.login-code-img {
+  height: 38px;
+}
+</style>

@@ -1,0 +1,73 @@
+@import url('../font/font.css');
+// 设置一些全局颜色
+:root{
+  --title-color:rgb(255, 159, 25);
+  --title-bottom-color:#f8b64c;
+  --font-name:'Alimama-Circle';
+  font-family: var(--font-name);
+}
+.opennlg-container{
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+  .about-area{
+    width: 100%;
+    margin: 50px 0;
+    color: #000;
+  }
+  .h22{
+    border-bottom: 3px double var(--title-bottom-color);
+    font-size: 28px;
+    color: #222222;
+    line-height: 30px;
+    font-weight: 600;
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+  }
+  .center{
+    display: flex;
+    justify-content: center;
+  }
+  .clear{
+    clear: both;
+    display: block;
+    height: 4px;
+  }
+  
+  @media (min-width: 1200px){
+    .opennlg-container{
+      padding: 0;
+    }
+  }
+  @media (min-width: 1200px) {
+    .opennlg-container {
+        width: 1170px;
+    }
+}
+.section-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    p{
+        font-size: 15px;
+        color: #848484;
+        font-weight: 400;
+        line-height: 28px;
+        font-family: 'Roboto', sans-serif;
+    }
+    .title{
+        border-bottom: 3px double var(--title-bottom-color);
+        line-height: 30px;
+        padding-bottom: 6px;
+        margin-bottom: 10px;
+        color: var(--title-color);
+        font-weight: 700;
+        text-align: center;
+        font-size: 50px !important;
+        line-height: 50px;
+    }
+}

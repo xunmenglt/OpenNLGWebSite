@@ -1,0 +1,59 @@
+server:
+  servlet:
+    context-path: /api
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql:3306/opennlg?serverTimezone=UTC&serverTimezone=Asia/Shanghai
+    username: root
+    password: opennlg
+    hikari:
+      pool-name: DataHikaricp
+      minimum-idle: 5
+      idle-timeout: 180000
+      maximum-pool-size: 10
+      auto-commit: true
+      max-lifetime: 180000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+  servlet:
+    multipart:
+      max-file-size: 70MB
+      max-request-size: 120MB
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/*Mapper.xml
+  type-aliases-package: com.opennlg.pojo
+  configuration:
+    map-underscore-to-camel-case: true
+
+
+jwt:
+  # Jwt存储的请求头
+  tokenHeader: Authorization
+  # Jwt加密秘钥
+  secret: A2DFAB8685295DA935806AAF0BC7D3C9
+  # Jwt 的超期限时间（60*60）*24
+  expiration: 604800
+  # Jwt负载中拿到开头
+  tokenHead: Bearer
+
+
+# swagger参数配置
+swagger:
+  base-package: com.opennlg.controller
+  docket:
+    enable: false
+  api-info:
+    title: OpenNLG WebSite
+    description: OpenNLG WebSite API
+    author: 寻梦
+    url: http://localhost/doc.html
+    email: xmliuteng@163.com
+    version: 1.0
+
+# 设置静态资源路径
+file:
+  path: /var/user/opennlgfiles/
+  resource-path: /files/**
+  domain: https://opennlg.cn/api/files/

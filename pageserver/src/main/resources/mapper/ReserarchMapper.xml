@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.opennlg.mapper.ReserarchMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.opennlg.pojo.Reserarch">
+        <id column="reserarch_id" property="reserarchId" />
+        <result column="reserarch_title" property="reserarchTitle" />
+        <result column="reserarch_source" property="reserarchSource" />
+        <result column="reserarch_author" property="reserarchAuthor" />
+        <result column="reserarch_cover" property="reserarchCover" />
+        <result column="is_new" property="isNew" />
+        <result column="outside_url" property="outsideUrl" />
+        <result column="inside_url" property="insideUrl" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        reserarch_id, reserarch_title, reserarch_source, reserarch_author, reserarch_cover, is_new, outside_url, inside_url, create_time, update_time
+    </sql>
+    <select id="selectListByPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from og_reserarch
+        order by is_new desc, create_time desc
+    </select>
+</mapper>

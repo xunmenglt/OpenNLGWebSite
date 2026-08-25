@@ -1,0 +1,38 @@
+version: '3'
+services:
+  mysql:
+    restart: always
+    image: mysql:latest
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      - "MYSQL_HOST=127.0.0.1:3306"
+      - "MYSQL_ROOT_PASSWORD=opennlg"
+      - "MYSQL_DATABASE=opennlg"
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 5s
+      start_period: 5s
+      interval: 5s
+      retries: 10
+    ports:
+      - 9623:3306
+
+  server:
+    build: ./server
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ./server/files/:/var/user/opennlgfiles/
+    ports:
+      - 3000:3000
+  caddy:
+    image: caddy
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy/data:/data
+    ports:
+      - 80:80
+      - 443:443
+      - 8001:8001

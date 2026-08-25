@@ -1,0 +1,8 @@
+opennlg.cn {   
+    root * /data/pageclient
+	file_server
+    reverse_proxy /api/* server:3000
+}
+# opennlg.cn:8001 {
+#     reverse_proxy waste_land_web:3514
+# }

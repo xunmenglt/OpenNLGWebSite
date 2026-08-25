@@ -1,0 +1,13 @@
+server:
+  port: 3000
+
+spring:
+  application:
+    name: opennlg
+  profiles:
+    active: prod
+  mvc:
+    async:
+      request-timeout: 200000
+  jackson:
+    time-zone: GMT+8
