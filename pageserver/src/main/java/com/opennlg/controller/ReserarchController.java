@@ -49,8 +49,22 @@ public class ReserarchController {
     @ApiOperation("获取论文列表")
     @GetMapping("/list")
     public RespBean listReserarch(@RequestParam(value = "currentPage",defaultValue = "1") Integer currentPage,
-                             @RequestParam(value = "size",defaultValue = "10") Integer size){
-        return reserarchService.getReserarchList(currentPage,size);
+                             @RequestParam(value = "size",defaultValue = "10") Integer size,
+                             @RequestParam(value = "direction",required = false) String direction,
+                             @RequestParam(value = "author",required = false) String author,
+                             @RequestParam(value = "title",required = false) String title,
+                             @RequestParam(value = "keyword",required = false) String keyword,
+                             @RequestParam(value = "year",required = false) Integer year,
+                             @RequestParam(value = "type",required = false) String type,
+                             @RequestParam(value = "resource",required = false) String resource,
+                             @RequestParam(value = "venue",required = false) String venue){
+        return reserarchService.getReserarchList(currentPage,size,direction,author,title,keyword,year,type,resource,venue);
+    }
+
+    @ApiOperation("获取论文筛选选项")
+    @GetMapping("/options")
+    public RespBean optionsReserarch(){
+        return reserarchService.getReserarchOptions();
     }
 
     @ApiOperation("获取论文")

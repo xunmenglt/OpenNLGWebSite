@@ -17,6 +17,14 @@ Desktop.ini
 *~
 
 # Local environment and secrets
+pageserver/src/main/resources/application-local.yml
+.local/
+.env
+.env.*
+!.env.example
+*.mhtml
+*.xlsx
+__pycache__/
 
 # Logs and temporary files
 *.log
@@ -35,6 +43,7 @@ pnpm-debug.log*
 # Node / Vue
 node_modules/
 dist/
+pageclient/dist-offline/
 .cache/
 .parcel-cache/
 .eslintcache
@@ -68,4 +77,5 @@ dockerscript/caddy/data/
 .nyc_output/
 junit.xml
 reports/
-
+runs/
+exports/

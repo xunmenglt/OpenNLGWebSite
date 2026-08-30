@@ -1,0 +1,116 @@
+{
+  "3automaticalignmentframeworkforattributedtextgeneration": {
+    "title": "A³: Automatic Alignment Framework for Attributed Text Generation",
+    "publication_type": "conference",
+    "formal_status": "confirmed_official",
+    "metadata_source": "ACL Anthology",
+    "metadata_url": "https://aclanthology.org/2025.acl-long.1407/",
+    "pdf_url": "https://aclanthology.org/2025.acl-long.1407.pdf",
+    "source": "Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)"
+  },
+  "unleashingreasoningcapabilityofllmsviascalablequestionsynthesisfromscratch": {
+    "title": "Unleashing LLM Reasoning Capability via Scalable Question Synthesis from Scratch",
+    "publication_type": "conference",
+    "formal_status": "confirmed_official",
+    "metadata_source": "ACL Anthology",
+    "metadata_url": "https://aclanthology.org/2025.acl-long.658/",
+    "pdf_url": "https://aclanthology.org/2025.acl-long.658.pdf",
+    "source": "Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)"
+  },
+  "logolongcontextalignmentviaefficientpreferenceoptimization": {
+    "publication_type": "conference",
+    "formal_status": "confirmed_official",
+    "metadata_source": "PMLR",
+    "metadata_url": "https://proceedings.mlr.press/v267/tang25j.html",
+    "pdf_url": "https://raw.githubusercontent.com/mlresearch/v267/main/assets/tang25j/tang25j.pdf",
+    "source": "Proceedings of the 42nd International Conference on Machine Learning"
+  },
+  "fapoflawedawarepolicyoptimizationforefficientandreliablereasoning": {
+    "publication_type": "conference",
+    "formal_status": "confirmed_official",
+    "metadata_source": "ICLR",
+    "metadata_url": "https://iclr.cc/virtual/2026/poster/10007861",
+    "pdf_url": "https://openreview.net/pdf?id=jhqqoimoWt",
+    "source": "International Conference on Learning Representations 2026"
+  },
+  "revisitinglongcontextmodelingfromcontextdenoisingperspective": {
+    "publication_type": "conference",
+    "formal_status": "confirmed_official",
+    "metadata_source": "ICLR proceedings",
+    "metadata_url": "https://openreview.net/pdf/8515b36890a96aadd2d779c1c8a996a071e9560a.pdf",
+    "pdf_url": "https://openreview.net/pdf/8515b36890a96aadd2d779c1c8a996a071e9560a.pdf",
+    "source": "International Conference on Learning Representations 2026"
+  },
+  "thoughtsareallovertheplaceontheunderthinkingofo1likellms": {
+    "title": "Thoughts Are All Over the Place: On the Underthinking of Long Reasoning Models",
+    "publication_type": "conference",
+    "formal_status": "confirmed_official",
+    "metadata_source": "NeurIPS proceedings",
+    "metadata_url": "https://proceedings.neurips.cc/paper_files/paper/2025/hash/2bfc4acb2e5c4af1576d14b0df9a664c-Abstract-Conference.html",
+    "pdf_url": "https://proceedings.neurips.cc/paper_files/paper/2025/file/2bfc4acb2e5c4af1576d14b0df9a664c-Paper-Conference.pdf",
+    "source": "Advances in Neural Information Processing Systems 38 (NeurIPS 2025)",
+    "authors": "Yue Wang, Qiuzhi Liu, Jiahao Xu, Tian Liang, Xingyu Chen, Zhiwei He, Linfeng Song, Dian Yu, Juntao Li, Zhuosheng Zhang, Rui Wang, Zhaopeng Tu, Haitao Mi, Dong Yu"
+  },
+  "arebertfamilygoodinstructionfollowersastudyontheirpotentialandlimitations": {
+    "publication_type": "conference",
+    "formal_status": "confirmed_official",
+    "metadata_source": "ICLR proceedings",
+    "metadata_url": "https://proceedings.iclr.cc/paper_files/paper/2024/hash/0a13eb0c08247364066e8d86551c3090-Abstract-Conference.html",
+    "pdf_url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/0a13eb0c08247364066e8d86551c3090-Paper-Conference.pdf",
+    "source": "International Conference on Learning Representations 2024"
+  },
+  "layoutnuwarevealingthehiddenlayoutexpertiseoflargelanguagemodels": {
+    "publication_type": "conference",
+    "formal_status": "confirmed_official",
+    "metadata_source": "ICLR proceedings",
+    "metadata_url": "https://proceedings.iclr.cc/paper_files/paper/2024/hash/a6a1e4c756d700d9aedcc1896a7e6fb0-Abstract-Conference.html",
+    "pdf_url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/a6a1e4c756d700d9aedcc1896a7e6fb0-Paper-Conference.pdf",
+    "source": "International Conference on Learning Representations 2024"
+  },
+  "timotowardsbettertemporalreasoningforlanguagemodels": {
+    "publication_type": "conference",
+    "formal_status": "confirmed_official",
+    "metadata_source": "OpenReview",
+    "metadata_url": "https://openreview.net/forum?id=3TzGD95Jw1",
+    "pdf_url": "https://openreview.net/pdf?id=3TzGD95Jw1",
+    "source": "Conference on Language Modeling 2024"
+  },
+  "conflictbankabenchmarkforevaluatingtheinfluenceofknowledgeconflictsinllm": {
+    "publication_type": "conference",
+    "formal_status": "confirmed_official",
+    "metadata_source": "OpenReview",
+    "metadata_url": "https://openreview.net/profile?id=~Tong_Zhu2",
+    "pdf_url": "https://arxiv.org/pdf/2408.12076",
+    "source": "NeurIPS 2024 Datasets and Benchmarks Track"
+  },
+  "strokenuwatokenizingstrokesforvectorgraphicsynthesis": {
+    "publication_type": "conference",
+    "formal_status": "confirmed_metadata",
+    "metadata_source": "DBLP",
+    "metadata_url": "https://dblp.org/rec/conf/icml/TangWZNYLYW0LD24",
+    "pdf_url": "https://raw.githubusercontent.com/mlresearch/v235/main/assets/tang24h/tang24h.pdf",
+    "source": "International Conference on Machine Learning 2024",
+    "authors": "Zecheng Tang, Chenfei Wu, Zekai Zhang, Minheng Ni, Shengming Yin, Yu Liu, Zhengyuan Yang, Lijuan Wang, Zicheng Liu, Juntao Li, Nan Duan"
+  },
+  "asurveyonhumanpreferencelearningforlargelanguagemodels": {
+    "pdf_url": "https://arxiv.org/pdf/2406.11191"
+  },
+  "asurveyspatiotemporalconsistencyinvideogeneration": {
+    "pdf_url": "https://arxiv.org/pdf/2502.17863"
+  },
+  "towardsdsnerunveilingandaddressinglatentnoiseindistantannotations": {
+    "pdf_url": "https://arxiv.org/pdf/2505.12454"
+  },
+  "thebenefitsinshallowmergedecodingacrosslargelanguagemodellayers": {
+    "pdf_url": "https://link.springer.com/content/pdf/10.1007%2F978-981-97-9434-8_30.pdf"
+  },
+  "towardsmorerealisticchinesespellcheckingwithnewbenchmarkandspecializedexpertmodel": {
+    "pdf_url": "https://aclanthology.org/2024.lrec-main.1440.pdf"
+  },
+  "exploringandmitigatingshortcutlearningforgenerativelargelanguagemodels": {
+    "pdf_url": "https://aclanthology.org/2024.lrec-main.602.pdf"
+  },
+  "tabmedbertatabularknowledgeenhancedbiomedicalpretrainedlanguagemodel": {
+    "pdf_url": "https://journals.sagepub.com/doi/pdf/10.3233/FAIA240674"
+  }
+}

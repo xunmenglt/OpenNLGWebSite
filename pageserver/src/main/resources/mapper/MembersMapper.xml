@@ -18,6 +18,11 @@
         <result column="inside_url" property="insideUrl" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
+        <result column="cohort_year" property="cohortYear" />
+        <result column="cohort_label" property="cohortLabel" />
+        <result column="program_type" property="programType" />
+        <result column="degree_type" property="degreeType" />
+        <result column="graduation_destination" property="graduationDestination" />
     </resultMap>
 
     <resultMap id="SelectMembersListResultMap" type="com.opennlg.pojo.MembersCategory">
@@ -49,11 +54,74 @@
             m.outside_url,
             m.inside_url,
             m.create_time,
-            m.update_time
+            m.update_time,
+            me.cohort_year,
+            me.cohort_label,
+            me.program_type,
+            me.degree_type,
+            me.graduation_destination
         FROM `og_members_category` AS mc
-        RIGHT JOIN `og_members` AS m
-        ON m.`ct_type`=mc.`ct_type`
-        ORDER BY mc.`sort` ASC , m.serial_num ASC 
+        INNER JOIN `og_member_category_rel` AS mcr
+        ON mcr.`ct_type` = mc.`ct_type` AND mcr.`is_visible` = 1
+        INNER JOIN `og_members` AS m
+        ON m.`member_id` = mcr.`member_id`
+        LEFT JOIN `og_member_education` AS me
+        ON me.`member_id` = m.`member_id`
+        AND ((mcr.`ct_type` = 'phd' AND me.`degree_type` = 'phd')
+          OR (mcr.`ct_type` = 'graduate_student' AND me.`degree_type` = 'master')
+          OR (mcr.`ct_type` = 'graduate'))
+        ORDER BY mc.`sort` ASC, me.`cohort_year` ASC, mcr.`serial_num` ASC, m.`serial_num` ASC
     </select>
+
+    <select id="selectMemberAdminItem" resultMap="BaseResultMap">
+        SELECT
+            m.member_id, m.cn_name, m.en_name, m.member_desc, m.profession,
+            m.direction, m.email, COALESCE(mcr.ct_type, m.ct_type) AS ct_type,
+            m.serial_num, m.avatar_url, m.outside_url, m.inside_url,
+            m.create_time, m.update_time,
+            me.cohort_year, me.cohort_label, me.program_type, me.degree_type,
+            me.graduation_destination
+        FROM og_members m
+        LEFT JOIN og_member_category_rel mcr
+            ON mcr.member_id = m.member_id AND mcr.is_primary = 1
+        LEFT JOIN og_member_education me
+            ON me.member_id = m.member_id
+            AND ((COALESCE(mcr.ct_type, m.ct_type) = 'phd' AND me.degree_type = 'phd')
+              OR (COALESCE(mcr.ct_type, m.ct_type) = 'graduate_student' AND me.degree_type = 'master')
+              OR (COALESCE(mcr.ct_type, m.ct_type) = 'graduate'))
+        WHERE m.member_id = #{memberId}
+        ORDER BY me.update_time DESC
+        LIMIT 1
+    </select>
+
+    <update id="hideMemberRelations">
+        UPDATE og_member_category_rel
+        SET is_visible = 0, is_primary = 0
+        WHERE member_id = #{memberId}
+    </update>
+
+    <insert id="upsertPrimaryMemberRelation">
+        INSERT INTO og_member_category_rel
+            (member_id, ct_type, is_primary, is_visible, serial_num)
+        VALUES (#{memberId}, #{ctType}, 1, 1, COALESCE(#{serialNum}, 0))
+        ON DUPLICATE KEY UPDATE
+            is_primary = 1,
+            is_visible = 1,
+            serial_num = VALUES(serial_num),
+            update_time = CURRENT_TIMESTAMP
+    </insert>
+
+    <delete id="deleteMemberEducation">
+        DELETE FROM og_member_education
+        WHERE member_id = #{memberId} AND degree_type = #{degreeType}
+    </delete>
+
+    <insert id="insertMemberEducation">
+        INSERT INTO og_member_education
+            (member_id, degree_type, cohort_year, cohort_label, program_type,
+             graduation_destination, display_order)
+        VALUES (#{memberId}, #{degreeType}, #{cohortYear}, #{cohortLabel},
+                #{programType}, #{graduationDestination}, COALESCE(#{displayOrder}, 0))
+    </insert>
 
 </mapper>

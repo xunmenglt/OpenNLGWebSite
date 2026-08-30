@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * <p>
@@ -80,16 +82,33 @@ public class ReserarchServiceImpl extends ServiceImpl<ReserarchMapper, Reserarch
     }
 
     @Override
-    public RespBean getReserarchList(Integer currentPage, Integer size) {
+    public RespBean getReserarchList(Integer currentPage, Integer size, String direction,
+                                     String author, String title, String keyword, Integer year,
+                                     String type, String resource, String venue) {
         Page<Reserarch> page=new Page<>(currentPage,size);
         Page<Reserarch> reserarchPage=null;
         try {
-            reserarchPage=reserarchMapper.selectListByPage(page);
+            reserarchPage=reserarchMapper.selectListByPage(page,direction,author,title,keyword,year,type,resource,venue);
         }catch (Exception e){
             return RespBean.fail("服务器异常，请稍后重试");
         }
         RespPageBean pageBean=RespPageBean.tranPageBeanByPageObject(reserarchPage);
         return RespBean.success("SUCCESS",pageBean);
+    }
+
+    @Override
+    public RespBean getReserarchOptions() {
+        try {
+            Map<String, Object> options = new LinkedHashMap<>();
+            options.put("directions", reserarchMapper.selectResearchDirections());
+            options.put("years", reserarchMapper.selectPublicationYears());
+            options.put("types", reserarchMapper.selectPublicationTypes());
+            options.put("resources", reserarchMapper.selectPublicationResources());
+            options.put("venues", reserarchMapper.selectPublicationVenues());
+            return RespBean.success("SUCCESS", options);
+        } catch (Exception e) {
+            return RespBean.fail("服务器异常，请稍后重试");
+        }
     }
 
     @Override

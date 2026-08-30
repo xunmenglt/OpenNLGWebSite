@@ -1,0 +1,76 @@
+{
+  "venues": [
+    {
+      "short_name": "ACL",
+      "patterns": ["\\bACL\\b", "Annual Meeting of the Association for Computational", "Proceedings of the \\d+(?:st|nd|rd|th) Annual Meeting of the Association for Computational", "Findings of the Association for Computational Linguistics"]
+    },
+    {
+      "short_name": "EMNLP",
+      "patterns": ["\\bEMNLP\\b", "Conference on Empirical Methods in Natural Language Processing", "Findings of EMNLP"]
+    },
+    {
+      "short_name": "NAACL",
+      "patterns": ["\\bNAACL\\b", "North American Chapter of the Association for Computational Linguistics"]
+    },
+    {
+      "short_name": "EACL",
+      "patterns": ["\\bEACL\\b", "European Chapter of the Association for Computational Linguistics"]
+    },
+    {
+      "short_name": "COLING",
+      "patterns": ["\\bCOLING\\b", "International Conference on Computational Linguistics", "International conference on computational"]
+    },
+    {
+      "short_name": "INLG",
+      "patterns": ["\\bINLG\\b", "International Natural Language Generation Conference"]
+    },
+    {
+      "short_name": "AACL",
+      "patterns": ["\\bAACL\\b", "Asia-Pacific Chapter of the Association for Computational Linguistics"]
+    },
+    {
+      "short_name": "NeurIPS",
+      "patterns": ["\\bNeurIPS\\b", "Neural Information Processing Systems"]
+    },
+    {
+      "short_name": "ICLR",
+      "patterns": ["\\bICLR\\b", "International Conference on Learning Representations"]
+    },
+    {
+      "short_name": "ICML",
+      "patterns": ["\\bICML\\b", "International Conference on Machine Learning"]
+    },
+    {
+      "short_name": "AAAI",
+      "patterns": ["\\bAAAI\\b", "AAAI Conference on Artificial Intelligence"]
+    },
+    {
+      "short_name": "IJCAI",
+      "patterns": ["\\bIJCAI\\b", "International Joint Conference on Artificial Intelligence"]
+    },
+    {
+      "short_name": "NLPCC",
+      "patterns": ["\\bNLPCC\\b", "Natural Language Processing and Chinese Computing"]
+    },
+    {
+      "short_name": "COLM",
+      "patterns": ["\\bCOLM\\b", "Conference on Language Modeling"]
+    },
+    {
+      "short_name": "CCL",
+      "patterns": ["\\bCCL\\b", "Joint International Conference on Computational"]
+    },
+    {
+      "short_name": "WSDM",
+      "patterns": ["\\bWSDM\\b", "International Conference on Web Search and Data Mining"]
+    },
+    {
+      "short_name": "ECAI",
+      "patterns": ["\\bECAI\\b", "European Conference on Artificial Intelligence"]
+    },
+    {
+      "short_name": "ACML",
+      "patterns": ["\\bACML\\b", "Asian Conference on Machine Learning"]
+    }
+  ]
+}

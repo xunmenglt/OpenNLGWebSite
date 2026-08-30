@@ -85,5 +85,25 @@ public class Members implements Serializable {
     @JsonFormat(pattern="yyyy-MM-dd HH:ss:mm",timezone="GMT+8")
     private LocalDateTime updateTime;
 
+    @ApiModelProperty(value = "登记年级")
+    @TableField(exist = false)
+    private Integer cohortYear;
+
+    @ApiModelProperty(value = "原始年级标签")
+    @TableField(exist = false)
+    private String cohortLabel;
+
+    @ApiModelProperty(value = "培养类型")
+    @TableField(exist = false)
+    private String programType;
+
+    @ApiModelProperty(value = "学历")
+    @TableField(exist = false)
+    private String degreeType;
+
+    @ApiModelProperty(value = "毕业去向")
+    @TableField(exist = false)
+    private String graduationDestination;
+
 
 }

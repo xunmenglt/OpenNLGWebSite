@@ -49,6 +49,38 @@ public class Reserarch implements Serializable {
     @TableField("reserarch_author")
     private String reserarchAuthor;
 
+    @ApiModelProperty(value = "正式发表年份")
+    @TableField("publication_year")
+    private Integer publicationYear;
+
+    @ApiModelProperty(value = "论文类型")
+    @TableField("publication_type")
+    private String publicationType;
+
+    @ApiModelProperty(value = "研究方向")
+    @TableField("research_direction")
+    private String researchDirection;
+
+    @ApiModelProperty(value = "会议或期刊简称")
+    @TableField("venue_short_name")
+    private String venueShortName;
+
+    @ApiModelProperty(value = "PDF链接")
+    @TableField("pdf_url")
+    private String pdfUrl;
+
+    @ApiModelProperty(value = "DOI链接")
+    @TableField("doi_url")
+    private String doiUrl;
+
+    @ApiModelProperty(value = "代码链接")
+    @TableField("code_url")
+    private String codeUrl;
+
+    @ApiModelProperty(value = "项目链接")
+    @TableField("project_url")
+    private String projectUrl;
+
     @ApiModelProperty(value = "研究文章封面")
     @TableField("reserarch_cover")
     private String reserarchCover;

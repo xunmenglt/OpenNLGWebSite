@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${OPENNLG_DB_URL:jdbc:mysql://127.0.0.1:3306/opennlg?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false}
+    username: ${OPENNLG_DB_USERNAME:opennlg_dev}
+    password: ${OPENNLG_DB_PASSWORD}
+  servlet:
+    multipart:
+      max-file-size: 70MB
+      max-request-size: 70MB
+
+jwt:
+  tokenHeader: Authorization
+  secret: ${OPENNLG_JWT_SECRET:change-this-local-development-secret-before-network-use}
+  expiration: 604800
+  tokenHead: Bearer
+
+file:
+  path: ${OPENNLG_FILE_PATH:/absolute/path/to/opennlg/files/}
+  resource-path: /files/**
+  domain: ${OPENNLG_FILE_DOMAIN:http://localhost:3000/files/}

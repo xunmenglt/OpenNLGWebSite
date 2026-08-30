@@ -2,12 +2,12 @@ version: '3'
 services:
   mysql:
     restart: always
-    image: mysql:latest
+    image: mysql:8.0
     volumes:
       - ./mysql:/var/lib/mysql
     environment:
       - "MYSQL_HOST=127.0.0.1:3306"
-      - "MYSQL_ROOT_PASSWORD=opennlg"
+      - "MYSQL_ROOT_PASSWORD=${OPENNLG_MYSQL_ROOT_PASSWORD}"
       - "MYSQL_DATABASE=opennlg"
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
@@ -25,6 +25,13 @@ services:
         condition: service_healthy
     volumes:
       - ./server/files/:/var/user/opennlgfiles/
+    environment:
+      - "OPENNLG_DB_URL=${OPENNLG_DB_URL}"
+      - "OPENNLG_DB_USERNAME=${OPENNLG_DB_USERNAME}"
+      - "OPENNLG_DB_PASSWORD=${OPENNLG_DB_PASSWORD}"
+      - "OPENNLG_JWT_SECRET=${OPENNLG_JWT_SECRET}"
+      - "OPENNLG_FILE_PATH=${OPENNLG_FILE_PATH}"
+      - "OPENNLG_FILE_DOMAIN=${OPENNLG_FILE_DOMAIN}"
     ports:
       - 3000:3000
   caddy:

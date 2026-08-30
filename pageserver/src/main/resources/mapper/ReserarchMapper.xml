@@ -8,6 +8,14 @@
         <result column="reserarch_title" property="reserarchTitle" />
         <result column="reserarch_source" property="reserarchSource" />
         <result column="reserarch_author" property="reserarchAuthor" />
+        <result column="publication_year" property="publicationYear" />
+        <result column="publication_type" property="publicationType" />
+        <result column="research_direction" property="researchDirection" />
+        <result column="venue_short_name" property="venueShortName" />
+        <result column="pdf_url" property="pdfUrl" />
+        <result column="doi_url" property="doiUrl" />
+        <result column="code_url" property="codeUrl" />
+        <result column="project_url" property="projectUrl" />
         <result column="reserarch_cover" property="reserarchCover" />
         <result column="is_new" property="isNew" />
         <result column="outside_url" property="outsideUrl" />
@@ -18,12 +26,77 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        reserarch_id, reserarch_title, reserarch_source, reserarch_author, reserarch_cover, is_new, outside_url, inside_url, create_time, update_time
+        reserarch_id, reserarch_title, reserarch_source, reserarch_author,
+        publication_year, publication_type, research_direction, venue_short_name,
+        pdf_url, doi_url, code_url, project_url,
+        reserarch_cover, is_new, outside_url, inside_url, create_time, update_time
     </sql>
     <select id="selectListByPage" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
         from og_reserarch
-        order by is_new desc, create_time desc
+        <where>
+            <if test="direction != null and direction != ''">
+                and research_direction = #{direction}
+            </if>
+            <if test="author != null and author != ''">
+                and reserarch_author like concat('%', #{author}, '%')
+            </if>
+            <if test="title != null and title != ''">
+                and reserarch_title like concat('%', #{title}, '%')
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (reserarch_title like concat('%', #{keyword}, '%')
+                    or reserarch_author like concat('%', #{keyword}, '%'))
+            </if>
+            <if test="year != null">
+                and coalesce(publication_year, year(create_time)) = #{year}
+            </if>
+            <if test="type != null and type != ''">
+                and publication_type = #{type}
+            </if>
+            <if test="resource != null and resource != ''">
+                and reserarch_source like concat('%', #{resource}, '%')
+            </if>
+            <if test="venue != null and venue != ''">
+                and venue_short_name = #{venue}
+            </if>
+        </where>
+        order by coalesce(publication_year, year(create_time)) desc, is_new desc, create_time desc
+    </select>
+
+    <select id="selectResearchDirections" resultType="java.lang.String">
+        select distinct research_direction
+        from og_reserarch
+        where research_direction is not null and research_direction != ''
+        order by research_direction
+    </select>
+
+    <select id="selectPublicationYears" resultType="java.lang.Integer">
+        select distinct coalesce(publication_year, year(create_time))
+        from og_reserarch
+        where publication_year is not null or create_time is not null
+        order by coalesce(publication_year, year(create_time)) desc
+    </select>
+
+    <select id="selectPublicationTypes" resultType="java.lang.String">
+        select distinct publication_type
+        from og_reserarch
+        where publication_type is not null and publication_type != ''
+        order by publication_type
+    </select>
+
+    <select id="selectPublicationResources" resultType="java.lang.String">
+        select distinct reserarch_source
+        from og_reserarch
+        where reserarch_source is not null and reserarch_source != ''
+        order by reserarch_source
+    </select>
+
+    <select id="selectPublicationVenues" resultType="java.lang.String">
+        select distinct venue_short_name
+        from og_reserarch
+        where venue_short_name is not null and venue_short_name != ''
+        order by venue_short_name
     </select>
 </mapper>

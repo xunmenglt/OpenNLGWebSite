@@ -5,6 +5,10 @@ export const getReserarchListAPI=(param)=>{
     return getRequest('/reserarch/list',null,param)
 }
 
+export const getReserarchOptionsAPI=()=>{
+    return getRequest('/reserarch/options',null,null,{ skipAuthRedirect:true })
+}
+
 export const getReserarchItemAPI=(param)=>{
     return getRequest('/reserarch/item',null,param)
 }

@@ -1,6 +1,6 @@
-# OpenBA Website
+# OpenNLG Website
 
-OpenBA 团队网站，采用前后端分离架构：前端基于 Vue 2，后端基于 Spring Boot，数据存储使用 MySQL 8。项目支持本地开发联调，也可以通过 Docker Compose 部署。
+OpenNLG 团队网站，采用前后端分离架构：前端基于 Vue 2，后端基于 Spring Boot，数据存储使用 MySQL 8。当前公开站点使用 V3 设计；项目支持本地开发联调，也可以通过 Docker Compose 部署。
 
 ## 技术栈
 
@@ -12,15 +12,16 @@ OpenBA 团队网站，采用前后端分离架构：前端基于 Vue 2，后端�
 ## 项目结构
 
 ```text
-OpenBAWebSite/
+OpenNLGWebSite/
 ├── pageclient/                 # Vue 前端
 ├── pageserver/                 # Spring Boot 后端
+├── database/                   # 无敏感数据的数据库基线与说明
+├── scripts/                    # 数据导入、核验和离线发布工具
 ├── dockerscript/               # Docker Compose、Caddy 和数据库脚本
 │   ├── caddy/                  # Caddy 配置及前端部署目录
 │   ├── server/                 # 后端镜像构建目录
-│   ├── docker-compose.yaml
-│   └── opennlg.sql             # Docker 部署使用的初始化数据
-└── metarial/                   # 其他历史数据脚本
+│   └── docker-compose.yaml
+└── frontend-design.md           # V3 视觉设计基线
 ```
 
 ## 环境要求
@@ -46,38 +47,29 @@ Docker 部署需要：
 
 ```bash
 git clone <仓库地址>
-cd OpenBAWebSite
+cd OpenNLGWebSite
 ```
 
 后续命令均默认在项目根目录执行。
 
-### 2. 创建并导入数据库
+### 2. 创建数据库结构
 
-启动本机 MySQL 8，然后创建数据库并导入测试数据：
+启动本机 MySQL 8，然后创建空数据库并导入不含真实人员资料的结构：
 
 ```bash
 mysql -uroot -p -e "CREATE DATABASE IF NOT EXISTS opennlg DEFAULT CHARACTER SET utf8mb4;"
-mysql -uroot -p opennlg < dockerscript/opennlg.sql
+mysql -uroot -p opennlg < database/schema.sql
 ```
 
-数据库脚本包含建表语句和演示数据。重复导入会重建相关数据表，请先备份需要保留的数据。
+真实人员、论文和新闻数据应通过已审核的导入脚本或管理后台写入。已有环境升级前请先备份，并按 `pageserver/src/main/resources/db/migration/` 的版本顺序执行迁移脚本；详见 [database/README.md](database/README.md)。
 
 ### 3. 配置后端开发环境
 
-编辑 `pageserver/src/main/resources/application-dev.yml`：
+从 `pageserver/src/main/resources/application-local.example.yml` 复制一份 `application-local.yml`，再在当前终端设置开发账号密码：
 
-```yaml
-spring:
-  datasource:
-    url: jdbc:mysql://127.0.0.1:3306/opennlg?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
-    username: root
-    password: 你的本地数据库密码
-
-file:
-  # 修改为本机可写的绝对目录，并提前创建该目录
-  path: /absolute/path/to/opennlg/files/
-  resource-path: /files/**
-  domain: http://localhost:3000/files/
+```bash
+export OPENNLG_DB_PASSWORD='你的本地开发数据库密码'
+export SPRING_PROFILES_ACTIVE=local
 ```
 
 不要将个人数据库密码、生产密码或新生成的 JWT 密钥提交到 Git。
@@ -89,10 +81,10 @@ cd pageserver
 mvn test
 ```
 
-以 `dev` Profile 启动后端：
+以 `local` Profile 启动后端：
 
 ```bash
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
+mvn spring-boot:run
 ```
 
 后端默认监听 `http://localhost:3000`。开发环境开启了 Swagger，可访问：
@@ -103,19 +95,7 @@ http://localhost:3000/doc.html
 
 ### 4. 配置并启动前端
 
-项目当前在 `pageclient/src/utils/resources.js` 最后一行使用生产配置：
-
-```js
-export const applicationContext=prodApplication
-```
-
-本地联调前，将其临时改为：
-
-```js
-export const applicationContext=devApplication
-```
-
-然后安装依赖并启动开发服务器：
+前端开发服务器会自动使用本机 API，生产构建会自动使用线上 API。然后安装依赖并启动开发服务器：
 
 ```bash
 cd pageclient
@@ -129,7 +109,7 @@ npm run serve
 http://localhost:8080
 ```
 
-前端会向 `http://localhost:3000` 发送 API 请求。联调结束、构建生产版本前，请将 `resources.js` 切回 `prodApplication`。
+前端会向 `http://localhost:3000` 发送 API 请求。
 
 ### 5. 本地构建检查
 
@@ -164,25 +144,18 @@ Docker Compose 会启动以下服务：
 
 ### 1. 配置域名
 
-当前生产域名为 `opennlg.cn`，同时写在以下文件中：
+当前生产域名为 `opennlg.cn`，前端 API 默认配置位于：
 
 - `pageclient/src/utils/resources.js`
-- `pageserver/src/main/resources/application-prod.yml`
 - `dockerscript/caddy/Caddyfile`
 
-如果使用其他域名，请同步替换这三处域名，并将域名的 A/AAAA 记录解析到部署服务器。Caddy 申请 HTTPS 证书时，服务器的 `80` 和 `443` 端口必须可以从公网访问。
+如果使用其他域名，请更新前端配置、Caddy 配置和部署环境中的 `OPENNLG_FILE_DOMAIN`，并将域名的 A/AAAA 记录解析到部署服务器。Caddy 申请 HTTPS 证书时，服务器的 `80` 和 `443` 端口必须可以从公网访问。
 
-正式部署前还应修改以下生产配置：
-
-- `dockerscript/docker-compose.yaml` 中的 MySQL root 密码
-- `pageserver/src/main/resources/application-prod.yml` 中的数据库密码
-- `application-prod.yml` 中的 JWT `secret`
-
-数据库密码在 Compose 和后端配置中必须保持一致。
+正式部署前，将根目录 `.env.example` 复制为 `.env` 并替换所有示例值。`application-prod.yml` 只读取环境变量，不再存放数据库密码或 JWT 密钥。
 
 ### 2. 构建部署文件
 
-确认前端的 `resources.js` 已使用 `prodApplication`，然后执行：
+确认部署环境变量和 Caddy 域名已按实际部署地址配置，然后执行：
 
 ```bash
 # 构建后端
@@ -198,6 +171,8 @@ mkdir -p ../dockerscript/caddy/data/pageclient
 cp -R dist/. ../dockerscript/caddy/data/pageclient/
 
 cd ../dockerscript
+cp ../.env.example .env
+# 编辑 .env 后再继续
 ```
 
 `dockerscript/server/Dockerfile` 会把 `pageserver.jar` 打入后端镜像；Caddy 会从 `dockerscript/caddy/data/pageclient/` 提供前端静态文件。
@@ -211,14 +186,15 @@ docker compose up -d --build
 docker compose ps
 ```
 
-首次启动且数据库健康后，导入初始化数据：
+首次启动且数据库健康后，导入数据库结构：
 
 ```bash
+set -a; . ./.env; set +a
 docker compose exec -T mysql \
-  mysql -uroot -p'opennlg' opennlg < opennlg.sql
+  mysql -uroot -p"$OPENNLG_MYSQL_ROOT_PASSWORD" opennlg < ../database/schema.sql
 ```
 
-如果已经修改了 MySQL 密码，请同步替换命令中的 `opennlg`。初始化脚本会删除并重建相关表，因此只应在首次部署或确认需要重置数据时执行。
+随后导入经过审核的数据和上传文件。结构脚本不会删除已有数据；不要将真实人员 Excel、Scholar 导出、数据库转储或文件目录提交到 Git。
 
 ### 4. 验证部署
 
@@ -276,19 +252,19 @@ docker compose down
 
 ### 前端仍然请求 `https://opennlg.cn`
 
-检查 `pageclient/src/utils/resources.js`：本地开发应使用 `devApplication`，生产构建应使用正确域名的 `prodApplication`。修改后需要重新启动开发服务器或重新构建前端。
+检查 `pageclient/src/utils/resources.js`：本地开发使用本机 API，生产构建使用生产 API。修改后需要重新启动开发服务器或重新构建前端。
 
 ### 后端无法连接 MySQL
 
 检查当前激活的 Spring Profile、数据库地址、端口和密码：
 
-- 本地开发：MySQL 通常是 `127.0.0.1:3306`，启动时指定 `dev`
+- 本地开发：MySQL 通常是 `127.0.0.1:3306`，启动时指定 `local`
 - Docker：后端通过 Compose 服务名 `mysql:3306` 连接数据库
 - 宿主机访问 Docker MySQL：使用 `127.0.0.1:9623`
 
 ### 文件上传失败
 
-本地开发需确保 `application-dev.yml` 的 `file.path` 是存在且可写的目录。Docker 环境会把 `dockerscript/server/files/` 挂载到容器内的 `/var/user/opennlgfiles/`。
+本地开发需确保 `OPENNLG_FILE_PATH` 指向存在且可写的目录。Docker 环境会把 `dockerscript/server/files/` 挂载到容器内的 `/var/user/opennlgfiles/`。
 
 ### Caddy 无法签发 HTTPS 证书
 

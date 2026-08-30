@@ -55,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(
                 "/*/*list*",
+                "/reserarch/options",
                 "/team-culture/list*",
                 "/*/*item*",
                 resourcePath,

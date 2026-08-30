@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://101.35.238.237:9623/opennlg?serverTimezone=UTC&serverTimezone=Asia/Shanghai
-    username: root
-    password: opennlg
+    url: ${OPENNLG_DB_URL:jdbc:mysql://127.0.0.1:3306/opennlg?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false}
+    username: ${OPENNLG_DB_USERNAME:opennlg_dev}
+    password: ${OPENNLG_DB_PASSWORD}
     hikari:
       pool-name: DataHikaricp
       minimum-idle: 5
@@ -37,7 +37,7 @@ jwt:
   # Jwt存储的请求头
   tokenHeader: Authorization
   # Jwt加密秘钥
-  secret: A2DFAB8685295DA935806AAF0BC7D3C9
+  secret: ${OPENNLG_JWT_SECRET:change-this-development-secret-before-network-use}
   # Jwt 的超期限时间（60*60）*24
   expiration: 604800
   # Jwt负载中拿到开头
@@ -59,6 +59,6 @@ swagger:
 
 # 设置静态资源路径
 file:
-  path: D:/luangqibazao/opennlg/
+  path: ${OPENNLG_FILE_PATH:/absolute/path/to/opennlg/files/}
   resource-path: /files/**
-  domain: http://localhost:3000/files/
+  domain: ${OPENNLG_FILE_DOMAIN:http://localhost:3000/files/}

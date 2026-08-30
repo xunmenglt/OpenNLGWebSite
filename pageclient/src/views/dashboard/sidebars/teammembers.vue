@@ -109,6 +109,18 @@
                   :return-object="false"
                 ></v-combobox>
               </v-col>
+              <v-col cols="4">
+                <v-text-field type="number" label="年级（例如 2025）" v-model.number="createParam.cohortYear"></v-text-field>
+              </v-col>
+              <v-col cols="4">
+                <v-select label="学历" :items="degreeTypes" v-model="createParam.degreeType" clearable></v-select>
+              </v-col>
+              <v-col cols="4">
+                <v-text-field label="培养类型（如直博）" v-model="createParam.programType"></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field label="去向" v-model="createParam.graduationDestination"></v-text-field>
+              </v-col>
               <v-col cols="6">
                 <v-text-field label="外链" v-model="createParam.outsideUrl">
                 </v-text-field>
@@ -205,6 +217,18 @@
                   :return-object="false"
                 ></v-combobox>
               </v-col>
+              <v-col cols="4">
+                <v-text-field type="number" label="年级（例如 2025）" v-model.number="updateParam.cohortYear"></v-text-field>
+              </v-col>
+              <v-col cols="4">
+                <v-select label="学历" :items="degreeTypes" v-model="updateParam.degreeType" clearable></v-select>
+              </v-col>
+              <v-col cols="4">
+                <v-text-field label="培养类型（如直博）" v-model="updateParam.programType"></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field label="去向" v-model="updateParam.graduationDestination"></v-text-field>
+              </v-col>
               <v-col cols="6">
                 <v-text-field label="外链" v-model="updateParam.outsideUrl">
                 </v-text-field>
@@ -237,7 +261,6 @@
 <script>
 import {createMembersAPI, deleteMembersAPI, getMembersItemAPI, getMembersListAPI, updateMembersAPI} from '@/utils/api/members'
 import MemberCard from '@/components/member-card'
-import PicCropper from '@/components/pic-cropper'
 import { uploadFileAPI } from '@/utils/api/file'
 import {getMembersCategoryListAPI} from '@/utils/api/membersCategory'
 export default {
@@ -249,6 +272,11 @@ export default {
     return {
       tableData:[],
       membersCategories:[],
+      degreeTypes: [
+        { text: '本科', value: 'bachelor' },
+        { text: '硕士', value: 'master' },
+        { text: '博士', value: 'phd' },
+      ],
       dialogDelete: false,
       tableIsLoading:false,
       dialogCropper:false,
@@ -266,7 +294,12 @@ export default {
         "profession":"",
         "direction":"",
         "email":"",
-        "ctType":""
+        "ctType":"",
+        "cohortYear": null,
+        "cohortLabel": "",
+        "programType": "",
+        "degreeType": "",
+        "graduationDestination": ""
       },
       createParam:{
         "avatarUrl": "",  
@@ -279,7 +312,12 @@ export default {
         "profession":"",
         "direction":"",
         "email":"",
-        "ctType":""
+        "ctType":"",
+        "cohortYear": null,
+        "cohortLabel": "",
+        "programType": "",
+        "degreeType": "",
+        "graduationDestination": ""
       },
       updateParam:{
         "avatarUrl": "",  
@@ -292,7 +330,12 @@ export default {
         "profession":"",
         "direction":"",
         "email":"",
-        "ctType":""
+        "ctType":"",
+        "cohortYear": null,
+        "cohortLabel": "",
+        "programType": "",
+        "degreeType": "",
+        "graduationDestination": ""
       }
     }
   },

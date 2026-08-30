@@ -1,12 +1,12 @@
 server:
   servlet:
-    context-path: /api
+    context-path: ${OPENNLG_CONTEXT_PATH:/api}
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql:3306/opennlg?serverTimezone=UTC&serverTimezone=Asia/Shanghai
-    username: root
-    password: opennlg
+    url: ${OPENNLG_DB_URL}
+    username: ${OPENNLG_DB_USERNAME}
+    password: ${OPENNLG_DB_PASSWORD}
     hikari:
       pool-name: DataHikaricp
       minimum-idle: 5
@@ -32,7 +32,7 @@ jwt:
   # Jwt存储的请求头
   tokenHeader: Authorization
   # Jwt加密秘钥
-  secret: A2DFAB8685295DA935806AAF0BC7D3C9
+  secret: ${OPENNLG_JWT_SECRET}
   # Jwt 的超期限时间（60*60）*24
   expiration: 604800
   # Jwt负载中拿到开头
@@ -54,6 +54,6 @@ swagger:
 
 # 设置静态资源路径
 file:
-  path: /var/user/opennlgfiles/
+  path: ${OPENNLG_FILE_PATH}
   resource-path: /files/**
-  domain: https://opennlg.cn/api/files/
+  domain: ${OPENNLG_FILE_DOMAIN}

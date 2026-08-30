@@ -12,6 +12,7 @@ import com.opennlg.vo.RespPageBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,24 +32,19 @@ public class MembersServiceImpl extends ServiceImpl<MembersMapper, Members> impl
     private MembersMapper membersMapper;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public RespBean createMembers(Members members) {
 
         if (ObjectUtils.isEmpty(members.getCnName())){
             return RespBean.fail("中文名称不能为空");
         }
-        if(ObjectUtils.isEmpty(members.getEnName())){
-            return RespBean.fail("英文名称不能为空");
+        if (ObjectUtils.isEmpty(members.getCtType())) {
+            return RespBean.fail("展示类别不能为空");
         }
-        if(ObjectUtils.isEmpty(members.getAvatarUrl())){
-            return RespBean.fail("头像不能为空");
-        }
-        if(ObjectUtils.isEmpty(members.getMemberDesc())){
-            return RespBean.fail("描述不能为空");
-        }
-
         try {
             int c = membersMapper.insert(members);
             if (c>0){
+                synchronizeDirectoryData(members);
                 return RespBean.success("创建成功");
             }else {
                 return RespBean.fail("创建失败，请重试");
@@ -74,11 +70,16 @@ public class MembersServiceImpl extends ServiceImpl<MembersMapper, Members> impl
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public RespBean updateMembers(Members members) {
         members.setUpdateTime(LocalDateTime.now());
+        if (ObjectUtils.isEmpty(members.getCtType())) {
+            return RespBean.fail("展示类别不能为空");
+        }
         try {
             boolean flag=updateById(members);
             if (flag){
+                synchronizeDirectoryData(members);
                 return RespBean.success("修改成功");
             }else {
                 return RespBean.fail("修改失败，请重试");
@@ -112,8 +113,41 @@ public class MembersServiceImpl extends ServiceImpl<MembersMapper, Members> impl
     
     @Override
     public RespBean getMembers(Integer membersId) {
-        Members members=getById(membersId);
+        Members members=membersMapper.selectMemberAdminItem(membersId);
         return RespBean.success("SUCCESS",members);
+    }
+
+    private void synchronizeDirectoryData(Members members) {
+        Integer memberId = members.getMemberId();
+        membersMapper.hideMemberRelations(memberId);
+        membersMapper.upsertPrimaryMemberRelation(memberId, members.getCtType(), members.getSerialNum());
+
+        if (members.getCohortYear() == null) {
+            return;
+        }
+        String degreeType = normalizeDegreeType(members);
+        String cohortLabel = members.getCohortLabel();
+        if (ObjectUtils.isEmpty(cohortLabel)) {
+            cohortLabel = members.getCohortYear() + "级" +
+                    (ObjectUtils.isEmpty(members.getProgramType()) ? "" : members.getProgramType());
+        }
+        membersMapper.deleteMemberEducation(memberId, degreeType);
+        membersMapper.insertMemberEducation(memberId, degreeType, members.getCohortYear(),
+                cohortLabel, members.getProgramType(), members.getGraduationDestination(),
+                members.getSerialNum());
+    }
+
+    private String normalizeDegreeType(Members members) {
+        if (!ObjectUtils.isEmpty(members.getDegreeType())) {
+            return members.getDegreeType();
+        }
+        if ("phd".equals(members.getCtType())) {
+            return "phd";
+        }
+        if ("graduate_student".equals(members.getCtType())) {
+            return "master";
+        }
+        return "master";
     }
 
 

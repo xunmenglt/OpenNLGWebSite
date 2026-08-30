@@ -13,7 +13,7 @@
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
 
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" max-width="880px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on" @click="toAddItem">
               New Item
@@ -62,6 +62,18 @@
                     <v-text-field label="authors" v-model="editedItem.reserarchAuthor">
                     </v-text-field>
                   </v-col>
+                  <v-col cols="12" sm="6">
+                    <v-text-field label="publication year" type="number" v-model.number="editedItem.publicationYear"></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6">
+                    <v-select label="publication type" :items="publicationTypes" v-model="editedItem.publicationType"></v-select>
+                  </v-col>
+                  <v-col cols="12" sm="6">
+                    <v-text-field label="research direction" v-model="editedItem.researchDirection"></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6">
+                    <v-text-field label="venue short name" v-model="editedItem.venueShortName"></v-text-field>
+                  </v-col>
                   <v-col cols="12">
                     <span>item is new?</span>
                     <v-radio-group row v-model="editedItem.isNew">
@@ -83,6 +95,18 @@
                   <v-col cols="6">
                     <v-text-field label="inside url" v-model="editedItem.insideUrl">
                     </v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6">
+                    <v-text-field label="PDF url" v-model="editedItem.pdfUrl"></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6">
+                    <v-text-field label="DOI url" v-model="editedItem.doiUrl"></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6">
+                    <v-text-field label="code url" v-model="editedItem.codeUrl"></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6">
+                    <v-text-field label="project url" v-model="editedItem.projectUrl"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-menu ref="menuCreate" v-model="menuCreate" :close-on-content-click="false" :return-value.sync="dateCreate"
@@ -222,12 +246,22 @@ export default {
     dateUpdate: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
     menuCreate: false,
     menuUpdate: false,
+    publicationTypes: [
+      { text: 'Conference Papers', value: 'conference' },
+      { text: 'Journal Articles', value: 'journal' },
+      { text: 'Preprint Articles', value: 'preprint' },
+      { text: 'Books', value: 'book' },
+    ],
     headers: [
       {text: 'id',value: 'reserarchId'},
       {text:"cover",value:"reserarchCover",sortable:false},
       { text: 'title', value: 'reserarchTitle',sortable: false },
       { text: 'source', value: 'reserarchSource',sortable: false },
       { text: 'authors', value: 'reserarchAuthor',align:"center" },
+      { text: 'year', value: 'publicationYear', sortable: false },
+      { text: 'type', value: 'publicationType', sortable: false },
+      { text: 'direction', value: 'researchDirection', sortable: false },
+      { text: 'venue', value: 'venueShortName', sortable: false },
       { text: 'isNew', value: 'isNew', sortable: false },
       { text: 'outside url', value: 'outsideUrl',sortable: false },
       { text: 'inside url', value: 'insideUrl',sortable: false },
@@ -247,6 +281,14 @@ export default {
       "insideUrl": "",
       "isNew": 1,
       "outsideUrl": "",
+      "publicationYear": null,
+      "publicationType": "conference",
+      "researchDirection": "",
+      "venueShortName": "",
+      "pdfUrl": "",
+      "doiUrl": "",
+      "codeUrl": "",
+      "projectUrl": "",
       "reserarchAuthor": "",
       "reserarchCover": "",
       "reserarchId": 0,
@@ -259,6 +301,14 @@ export default {
       "insideUrl": "",
       "isNew": 1,
       "outsideUrl": "",
+      "publicationYear": null,
+      "publicationType": "conference",
+      "researchDirection": "",
+      "venueShortName": "",
+      "pdfUrl": "",
+      "doiUrl": "",
+      "codeUrl": "",
+      "projectUrl": "",
       "reserarchAuthor": "",
       "reserarchCover": "",
       "reserarchId": 0,
@@ -371,6 +421,14 @@ export default {
           reserarchTitle: this.editedItem.reserarchTitle,
           reserarchSource: this.editedItem.reserarchSource,
           reserarchAuthor: this.editedItem.reserarchAuthor,
+          publicationYear: this.editedItem.publicationYear,
+          publicationType: this.editedItem.publicationType,
+          researchDirection: this.editedItem.researchDirection,
+          venueShortName: this.editedItem.venueShortName,
+          pdfUrl: this.editedItem.pdfUrl,
+          doiUrl: this.editedItem.doiUrl,
+          codeUrl: this.editedItem.codeUrl,
+          projectUrl: this.editedItem.projectUrl,
           reserarchCover: this.editedItem.reserarchCover,
           isNew: this.editedItem.isNew,
           outsideUrl: this.editedItem.outsideUrl,
@@ -385,6 +443,14 @@ export default {
           reserarchTitle: this.editedItem.reserarchTitle,
           reserarchSource: this.editedItem.reserarchSource,
           reserarchAuthor: this.editedItem.reserarchAuthor,
+          publicationYear: this.editedItem.publicationYear,
+          publicationType: this.editedItem.publicationType,
+          researchDirection: this.editedItem.researchDirection,
+          venueShortName: this.editedItem.venueShortName,
+          pdfUrl: this.editedItem.pdfUrl,
+          doiUrl: this.editedItem.doiUrl,
+          codeUrl: this.editedItem.codeUrl,
+          projectUrl: this.editedItem.projectUrl,
           reserarchCover: this.editedItem.reserarchCover,
           isNew: this.editedItem.isNew,
           outsideUrl: this.editedItem.outsideUrl,
