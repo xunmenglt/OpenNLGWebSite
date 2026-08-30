@@ -197,7 +197,9 @@ def inline_build(snapshot: dict, output: Path, warnings: list[str]) -> None:
     html = re.sub(r'<link[^>]+href="(?P<href>https?://[^\"]+)"[^>]*>', remove_external_link, html, flags=re.I)
     html = script_pattern.sub(lambda match: "<script>" + file_text(match.group("src")) + "</script>", html)
     snapshot_tag = "<script>window.__OPENNLG_OFFLINE_DATA__=" + json.dumps(snapshot, ensure_ascii=False, separators=(",", ":")) + ";</script>"
-    html = html.replace("</head>", snapshot_tag + "</head>", 1)
+    # Vue's entry scripts are emitted in <head>.  Put the snapshot immediately
+    # after the opening tag so api.js can read it during module initialization.
+    html = html.replace("<head>", "<head>" + snapshot_tag, 1)
 
     for reference, uri in local_assets().items():
         html = html.replace(reference, uri)
