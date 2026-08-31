@@ -211,12 +211,14 @@ def inline_build(snapshot: dict, output: Path, warnings: list[str]) -> None:
     # after the opening tag so api.js can read it during module initialization.
     html = html.replace("<head>", "<head>" + snapshot_tag, 1)
 
-    for reference, uri in local_assets().items():
-        html = html.replace(reference, uri)
-
     if "</body>" not in html:
         raise RuntimeError("离线前端 HTML 缺少 </body>，无法注入应用脚本。")
     html = html.replace("</body>", "".join(inline_scripts) + "</body>", 1)
+
+    # Apply asset replacement only after the application scripts are back in
+    # the document: webpack stores image and font URLs inside those scripts.
+    for reference, uri in local_assets().items():
+        html = html.replace(reference, uri)
 
     # Home's four research illustrations are external literals in the source.
     # Only replace URLs that the server proves are image data; PDF/profile links remain links.
