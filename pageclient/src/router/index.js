@@ -180,6 +180,13 @@ const routes = [
 const router = new VueRouter({
   // mode:'history',
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    // Restore the browser history position, reset only when moving to another
+    // page, and avoid jumping while a page updates its own query filters.
+    if (savedPosition) return savedPosition;
+    if (to.path === from.path) return false;
+    return { x: 0, y: 0 };
+  },
 });
 router.beforeEach((to, from, next) => {
   if (to.meta) {

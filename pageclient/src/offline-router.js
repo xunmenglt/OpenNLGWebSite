@@ -16,6 +16,12 @@ Vue.use(VueRouter);
 // keep Vue CLI from emitting route chunks that a standalone HTML cannot load.
 export default new VueRouter({
   mode: "hash",
+  scrollBehavior(to, from, savedPosition) {
+    // Keep offline preview navigation consistent with the normal V3 site.
+    if (savedPosition) return savedPosition;
+    if (to.path === from.path) return false;
+    return { x: 0, y: 0 };
+  },
   routes: [
     {
       path: "/",
