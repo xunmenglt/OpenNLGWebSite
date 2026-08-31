@@ -195,7 +195,17 @@ def inline_build(snapshot: dict, output: Path, warnings: list[str]) -> None:
         warnings.append("未内嵌第三方样式 %s（已移除；页面会使用本地字体回退）" % match.group("href"))
         return ""
     html = re.sub(r'<link[^>]+href="(?P<href>https?://[^\"]+)"[^>]*>', remove_external_link, html, flags=re.I)
-    html = script_pattern.sub(lambda match: "<script>" + file_text(match.group("src")) + "</script>", html)
+    # The Vue CLI entry scripts are normally deferred in <head>.  An inline
+    # script ignores ``defer`` and would run before ``#app`` in <body> exists,
+    # leaving the offline site blank.  Preserve their order but place them
+    # immediately before </body>, after the mount element has been parsed.
+    inline_scripts: list[str] = []
+
+    def inline_script(match: re.Match) -> str:
+        inline_scripts.append("<script>" + file_text(match.group("src")) + "</script>")
+        return ""
+
+    html = script_pattern.sub(inline_script, html)
     snapshot_tag = "<script>window.__OPENNLG_OFFLINE_DATA__=" + json.dumps(snapshot, ensure_ascii=False, separators=(",", ":")) + ";</script>"
     # Vue's entry scripts are emitted in <head>.  Put the snapshot immediately
     # after the opening tag so api.js can read it during module initialization.
@@ -203,6 +213,10 @@ def inline_build(snapshot: dict, output: Path, warnings: list[str]) -> None:
 
     for reference, uri in local_assets().items():
         html = html.replace(reference, uri)
+
+    if "</body>" not in html:
+        raise RuntimeError("离线前端 HTML 缺少 </body>，无法注入应用脚本。")
+    html = html.replace("</body>", "".join(inline_scripts) + "</body>", 1)
 
     # Home's four research illustrations are external literals in the source.
     # Only replace URLs that the server proves are image data; PDF/profile links remain links.
